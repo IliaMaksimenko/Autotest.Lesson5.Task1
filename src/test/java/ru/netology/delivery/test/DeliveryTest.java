@@ -3,7 +3,6 @@ package ru.netology.delivery.test;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.SelenideElement;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -16,14 +15,6 @@ import static com.codeborne.selenide.Selenide.*;
 
 class DeliveryTest {
 
-
-    @BeforeEach
-    void setup() {
-        Configuration.headless = true;
-//        Configuration.holdBrowserOpen = true;
-        open("http://localhost:9999");
-    }
-
     @Test
     @DisplayName("Should successful plan and replan meeting")
     void shouldSuccessfulPlanAndReplanMeeting() {
@@ -33,11 +24,8 @@ class DeliveryTest {
         var firstMeetingDate = DataGenerator.generateDate(daysToAddForFirstMeeting);
         var daysToAddForSecondMeeting = 7;
         var secondMeetingDate = DataGenerator.generateDate(daysToAddForSecondMeeting);
-        // TODO: добавить логику теста в рамках которого будет выполнено планирование и перепланирование встречи.
-        // Для заполнения полей формы можно использовать пользователя validUser и строки с датами в переменных
-        // firstMeetingDate и secondMeetingDate. Можно также вызывать методы generateCity(locale),
-        // generateName(locale), generatePhone(locale) для генерации и получения в тесте соответственно города,
-        // имени и номера телефона без создания пользователя в методе generateUser(String locale) в датагенераторе
+
+        open("http://localhost:9999");
 
         $("[data-test-id=\"city\"] input").setValue(validUser.getCity());
         SelenideElement date = $("[data-test-id=date] input");
@@ -55,6 +43,8 @@ class DeliveryTest {
         $("[data-test-id=\"replan-notification\"] [class=\"notification__title\"]").shouldBe(Condition.appear)
                 .shouldHave(Condition.exactText("Необходимо подтверждение"));
         $x("//*[@class=\"button__text\"] [text()=\"Перепланировать\"]").click();
+        $("[data-test-id=\"success-notification\"] [class=\"notification__content\"]").shouldBe(Condition.appear)
+                .shouldHave(Condition.exactText("Встреча успешно запланирована на " + secondMeetingDate));
 
     }
 }
